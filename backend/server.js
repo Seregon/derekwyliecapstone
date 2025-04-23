@@ -1,19 +1,25 @@
-require('dotenv').config();
-const express = require('express');
 const sql = require('mssql');
-const app = express();
-app.use(express.json());
 
-const connStr = process.env.SQLAZURECONNSTR_DB_CONNECTION_STRING;
+// Pull Azure connection string from env
+const connStr = process.env.SQLAZURECONNSTR_DB_CONN;
 if (!connStr) {
-  console.error('Driver={ODBC Driver 18 for SQL Server};Server=tcp:derekwyliecapstone.database.windows.net,1433;Database=derekwyliecapstone;Uid={your_user_name};Pwd={your_password_here};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryPassword');
+  console.error('❌ Missing connection string in SQLAZURECONNSTR_DB_CONN');
   process.exit(1);
 }
 
-let poolPromise = sql.connect(connStr);
+const poolPromise = sql.connect(connStr);
 
-// Health check
-app.get('/api/health', (req, res) => res.send('OK'));
+// Simple test endpoint
+app.get('/api/dbtest', async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    await pool.request().query('SELECT 1');
+    res.send('✅ DB connection OK');
+  } catch (err) {
+    console.error('DB connection error:', err);
+    res.status(500).send(`❌ DB error: ${err.message}`);
+  }
+});
 
 // 1. List all products
 app.get('/api/products', async (req, res) => {
