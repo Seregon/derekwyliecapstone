@@ -1,14 +1,24 @@
 // src/App.js
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CartProvider } from './CartContext';
+import NavBar from './components/NavBar';
+import Home from './Home';
+import Checkout from './Checkout';
 
 export default function App() {
-  useEffect(() => {
-    console.log('🛠️  App component mounted');
-  }, []);
+  const [showCart, setShowCart] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <h1 className="text-4xl font-bold text-blue-600">React Is Working!</h1>
-    </div>
+    <CartProvider>
+      <Router>
+        <NavBar onCartClick={() => setShowCart(true)} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/checkout" element={<Checkout />} />
+        </Routes>
+        {showCart && <CartSidebar />}
+      </Router>
+    </CartProvider>
   );
 }
