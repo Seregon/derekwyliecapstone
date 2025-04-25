@@ -1,26 +1,14 @@
-import React, { useState, useEffect } from 'react';
+// src/App.js
+import React, { useEffect } from 'react';
 
-function App() {
-    const [products, setProducts] = useState([]);
+export default function App() {
+  useEffect(() => {
+    console.log('🛠️  App component mounted');
+  }, []);
 
-    useEffect(() => {
-        fetch('http://localhost:7153/api/products')
-            .then(response => response.json())
-            .then(data => setProducts(data));
-    }, []);
-
-    return (
-        <div>
-            <h1>Our Products</h1>
-            <ul>
-                {products.map(product => (
-                    <li key={product.id}>
-                        {product.name} - ${product.price}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <h1 className="text-4xl font-bold text-blue-600">React Is Working!</h1>
+    </div>
+  );
 }
-
-export default App;
