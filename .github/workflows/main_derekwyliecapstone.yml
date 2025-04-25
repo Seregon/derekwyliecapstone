@@ -55,4 +55,4 @@ jobs:
           app-name: 'derekwyliecapstone'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4B27C528AF184362B07542771A6DF9DD }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A7C3364A6A314B8EA13F1AEF59C03414 }}
