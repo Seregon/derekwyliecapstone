@@ -10,8 +10,12 @@ jobs:
 
     steps:
       # 1. Check out the repo
+      steps:
       - uses: actions/checkout@v3
 
+      - name: List files in workspace
+        run: ls -R .
+        
       # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
