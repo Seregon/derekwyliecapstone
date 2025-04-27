@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/781cdc05-7e74-427c-8178-0a97835a6965/resourceGroups/derekwyliecapstone/providers/Microsoft.Web/sites/derekwyliecapstone",
+    "appService.deploySubpath": "."
+}
