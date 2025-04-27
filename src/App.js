@@ -5,6 +5,7 @@ import { CartProvider } from './CartContext';
 import NavBar from './components/NavBar';
 import Home from './Home';
 import Checkout from './Checkout';
+import CartSidebar from './components/CartSidebar';
 
 export default function App() {
   const [showCart, setShowCart] = useState(false);
