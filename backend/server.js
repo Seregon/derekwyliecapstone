@@ -1,31 +1,51 @@
-// backend/server.js
-require('dotenv').config();
-const path = require('path');
+require('dotenv').config();        // for local .env during dev
 const express = require('express');
 const sql = require('mssql');
+const path = require('path');
+
 const app = express();
+app.use(express.json());
 
-// Serve React static files
-app.use(express.static(path.join(__dirname, '..', 'build')));
+// Grab connection string: local or in Azure App Settings
+const connStr =
+  process.env.DB_CONN ||
+  process.env.SQLAZURECONNSTR_DB_CONN;
 
-// Connect to Azure SQL
-const connStr = process.env.SQLAZURECONNSTR_DB_CONN;
-let poolPromise = sql.connect(connStr);
+if (!connStr) {
+  console.error('❌ Missing database connection string');
+  process.exit(1);
+}
 
-// API test endpoint
-app.get('/api/dbtest', async (req, res) => {
+// Initialize SQL connection pool
+const poolPromise = sql.connect(connStr)
+  .then(pool => {
+    console.log('✔️  Connected to Azure SQL');
+    return pool;
+  })
+  .catch(err => {
+    console.error('✖️  SQL Connection Error:', err);
+    process.exit(1);
+  });
+
+// GET /api/products
+app.get('/api/products', async (req, res) => {
   try {
-    await (await poolPromise).request().query('SELECT 1');
-    res.send('✅ DB connection OK');
+    const pool = await poolPromise;
+    const result = await pool.request().query('SELECT * FROM dbo.Products');
+    res.json(result.recordset);
   } catch (err) {
-    res.status(500).send(`❌ DB error: ${err.message}`);
+    console.error('DB query error:', err);
+    res.status(500).json({ error: 'Database error' });
   }
 });
 
-// Catch-all to serve React app
+// (Optional) Serve React from the same App Service
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on ${port}`));
+app.listen(port, () =>
+  console.log(`🚀 Server listening on port ${port}`)
+);
