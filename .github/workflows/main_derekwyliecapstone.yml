@@ -1,45 +1,31 @@
-name: CI / CD
+name: Build & Deploy All-in-One App
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out the repository
       - uses: actions/checkout@v3
 
-      # 2. Set up Node.js (needed for building the React app)
+      # Install & build both back-end and front-end
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # 3. Install dependencies and build the React app
-      - name: Install and build React
-        working-directory: ./frontend
+      - name: Install and build
+        working-directory: ./backend
         run: |
-          npm install
-          npm run build
+          npm install    # runs postinstall: builds frontend too
 
-      # 4. Deploy the production build to Azure App Service
+      # Deploy entire backend folder (including built frontend) to App Service
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: derekwyliecapstone       # ← replace with your actual App Service name
+          app-name: derekwyliecapstone
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./frontend/build             # ← this is the folder Azure will publish
-
-      - name: Install backend deps
-        working-directory: ./backend
-        run: npm install
-
-      - name: Deploy backend
-        uses: azure/webapps-deploy@v2
-        with:
-        app-name: derekwyliecapstone
-        publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-        package: ./backend
+          package: ./backend
