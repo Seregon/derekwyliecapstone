@@ -9,11 +9,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout the code into ./repo
       - uses: actions/checkout@v3
 
-      - name: List entire workspace
+      # 2. Debug: list the repo directory structure
+      - name: List workspace
         run: |
-          echo "=== ROOT DIRECTORY ==="
+          echo "=== ROOT ==="
           ls -R .
+          echo "=== REPO FOLDER ==="
+          ls -R repo
 
-      # (We’ll fill in the build/deploy steps once we know where package.json lives)
+      # 3. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 4. Install & build React in repo/frontend
+      - name: Install and build React
+        run: |
+          cd repo/frontend
+          npm install
+          npm run build
+
+      # 5. Deploy the built app to Azure
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: derekwyliecapstone       # ← replace with your Web App name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: repo/frontend/build
