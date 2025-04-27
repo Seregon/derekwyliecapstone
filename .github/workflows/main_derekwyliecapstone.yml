@@ -11,15 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-    teps:
-      - uses: actions/checkout@v3
-
-      - name: Show workspace contents
-        run: |
-          echo "PWD: $PWD"
-          ls -R .
-
-
       # Install & build both back-end and front-end
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -27,7 +18,7 @@ jobs:
           node-version: '18'
 
       - name: Install and build
-        working-directory: ./backend
+        working-directory: backend
         run: |
           npm install    # runs postinstall: builds frontend too
 
