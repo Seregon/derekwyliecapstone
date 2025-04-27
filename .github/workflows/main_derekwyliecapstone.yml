@@ -12,29 +12,29 @@ jobs:
       # 1. Check out the repo
       - uses: actions/checkout@v3
 
+      # 2. Debug: list all files so we see your folder structure
       - name: List files in workspace
-        run: ls -R .
-        
-      # 2. Setup Node.js
+        run: |
+          echo "=== Workspace root ==="
+          ls -R .
+
+      # 3. Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # 3. Install dependencies in frontend/
-      - name: Install dependencies
-        working-directory: ./frontend
-        run: npm install
+      # 4. Install & build your React app
+      - name: Install and build React
+        run: |
+          cd frontend              # adjust this path if your package.json lives elsewhere
+          npm install
+          npm run build
 
-      # 4. Build the React app in frontend/
-      - name: Build React app
-        working-directory: ./frontend
-        run: npm run build
-
-      # 5. Deploy the build folder to Azure
-      - name: Deploy to Azure Web App
+      # 5. Deploy to Azure Web App
+      - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
-          app-name: derekwyliecapstone       # ← replace
+          app-name: derekwyliecapstone        # your Azure Web App name
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./frontend/build             # ← point at the build output
+          package: frontend/build                   # path to the built artifacts
