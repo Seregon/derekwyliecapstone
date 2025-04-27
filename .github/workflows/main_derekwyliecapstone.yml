@@ -24,12 +24,10 @@ jobs:
         with:
           node-version: '18'
 
-      # 4. Install & build your React app
-      - name: Install and build React
+       - name: Find package.json files
         run: |
-          cd frontend              # adjust this path if your package.json lives elsewhere
-          npm install
-          npm run build
+          echo "=== Listing all package.json ==="
+          find . -type f -name package.json
 
       # 5. Deploy to Azure Web App
       - name: Deploy to Azure
