@@ -9,34 +9,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the code into ./repo
+      # 1. Check out the repository
       - uses: actions/checkout@v3
 
-      # 2. Debug: list the repo directory structure
-      - name: List workspace
-        run: |
-          echo "=== ROOT ==="
-          ls -R .
-          echo "=== REPO FOLDER ==="
-          ls -R repo
-
-      # 3. Setup Node.js
+      # 2. Set up Node.js (needed for building the React app)
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # 4. Install & build React in repo/frontend
+      # 3. Install dependencies and build the React app
       - name: Install and build React
+        working-directory: ./frontend
         run: |
-          cd repo/frontend
           npm install
           npm run build
 
-      # 5. Deploy the built app to Azure
-      - name: Deploy to Azure
+      # 4. Deploy the production build to Azure App Service
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: derekwyliecapstone       # ← replace with your Web App name
+          app-name: derekwyliecapstone       # ← replace with your actual App Service name
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: repo/frontend/build
+          package: ./frontend/build             # ← this is the folder Azure will publish
