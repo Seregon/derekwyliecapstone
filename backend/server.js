@@ -8,14 +8,18 @@ app.use(express.json());
 
 // Grab connection string: local or in Azure App Settings
 const connStr =
-  process.env.DB_CONN ||
-  process.env.SQLAZURECONNSTR_DB_CONN;
+  process.env.SQLAZURECONNSTR_DB_CONN ||
+  process.env.DB_CONN;
 
 if (!connStr) {
   console.error('❌ Missing database connection string');
   process.exit(1);
 }
 
+mssql.connect(connStr)
+  .then(/* ... */)
+  .catch(/* ... */);
+  
 // Initialize SQL connection pool
 const poolPromise = sql.connect(connStr)
   .then(pool => {
