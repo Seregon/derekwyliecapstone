@@ -9,30 +9,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-     
       - uses: actions/checkout@v3
 
-      # 2. Debug: list all files so we see your folder structure
-      - name: List files in workspace
+      - name: Find package.json files
         run: |
-          echo "=== Workspace root ==="
-          ls -R .
+          echo "=== Listing all package.json files ==="
+          find . -type f -name package.json
 
-      # 3. Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-       - name: Find package.json files
+      - name: Find package.json files
         run: |
           echo "=== Listing all package.json ==="
           find . -type f -name package.json
 
-      # 5. Deploy to Azure Web App
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
-          app-name: derekwyliecapstone        # your Azure Web App name
+          app-name: derekwyliecapstone
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: frontend/build                   # path to the built artifacts
+          package: frontend/build  # adjust this path if needed
