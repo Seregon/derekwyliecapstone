@@ -17,19 +17,16 @@ jobs:
         with:
           node-version: '18'
 
-      # Build React front-end
       - name: Install & build frontend
         working-directory: frontend
         run: |
           npm install
           npm run build
 
-      # Install dependencies for back-end
       - name: Install backend dependencies
         working-directory: backend
         run: npm install
 
-      # Deploy the backend folder (which now contains build/)
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
