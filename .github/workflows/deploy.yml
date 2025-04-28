@@ -9,27 +9,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install backend & build frontend
+      # Build React front-end
+      - name: Install & build frontend
+        working-directory: ./frontend
         run: |
-          # Install and build React
-          cd frontend
           npm install
           npm run build
-          
-          # Install backend dependencies
-          cd ../backend
-          npm install
 
+      # Install dependencies for back-end
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      # Deploy the backend folder (which now contains build/)
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ secrets.AZURE_APP_NAME }}          # store your $APP in GitHub Secrets
+          app-name: ${{ secrets.AZURE_APP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: backend
