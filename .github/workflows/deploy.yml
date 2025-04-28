@@ -19,14 +19,14 @@ jobs:
 
       # Build React front-end
       - name: Install & build frontend
-        working-directory: ./frontend
+        working-directory: frontend
         run: |
           npm install
           npm run build
 
       # Install dependencies for back-end
       - name: Install backend dependencies
-        working-directory: ./backend
+        working-directory: backend
         run: npm install
 
       # Deploy the backend folder (which now contains build/)
